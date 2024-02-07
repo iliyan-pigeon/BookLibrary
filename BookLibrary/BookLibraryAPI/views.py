@@ -1,3 +1,21 @@
-from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from BookLibrary.BookLibraryAPI.serializers import BooksSerializer
+from BookLibrary.BookLibraryAPI.models import Books
 
-# Create your views here.
+
+@api_view(['GET'])
+def get_data(request):
+    books = Books.objects.all()
+    serializer = BooksSerializer(books, many=True)
+
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def add_book(request):
+    serializer = BooksSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data)
