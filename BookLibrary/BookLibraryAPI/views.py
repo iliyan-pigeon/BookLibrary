@@ -45,4 +45,4 @@ def delete_book(request, pk):
     book = Books.objects.get(id=pk)
     book.delete()
 
-    return Response(request.data)
+    return Response(f'The "{book.headline}" book is deleted!')
