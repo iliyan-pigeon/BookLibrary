@@ -38,3 +38,11 @@ def update_book(request, pk):
         serializer.save()
 
     return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+def delete_book(request, pk):
+    book = Books.objects.get(id=pk)
+    book.delete()
+
+    return Response(request.data)
