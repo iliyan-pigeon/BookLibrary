@@ -19,3 +19,11 @@ def add_book(request):
         serializer.save()
 
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_book(request, pk):
+    book = Books.objects.get(id=pk)
+    serializer = BooksSerializer(book, many=False)
+
+    return Response(serializer.data)
