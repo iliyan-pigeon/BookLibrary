@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'BookLibrary.BookLibraryAPI',
+    'BookLibrary.BookLibraryFrontend'
 ]
 
 MIDDLEWARE = [
