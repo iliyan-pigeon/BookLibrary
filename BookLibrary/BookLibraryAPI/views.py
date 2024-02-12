@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from BookLibrary.BookLibraryAPI.serializers import BooksSerializer
@@ -9,7 +10,16 @@ def get_data(request):
     books = Books.objects.all()
     serializer = BooksSerializer(books, many=True)
 
-    return Response(serializer.data)
+    page = request.query_params.get('page', 1)
+    paginator = Paginator(serializer.data, 10)
+    try:
+        paginated_data = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_data = paginator.page(1)
+    except EmptyPage:
+        paginated_data = paginator.page(paginator.num_pages)
+
+    return Response(paginated_data.object_list)
 
 
 @api_view(['POST'])
