@@ -1,8 +1,8 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from BookLibrary.BookLibraryAPI.serializers import BooksSerializer, BooksUserSerializer
@@ -106,3 +106,9 @@ def login_user(request):
     else:
         return Response({'error': 'Invalid credentials'}, status=401)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_user(request):
+    logout(request)
+    return Response({'detail': 'Successfully logged out'}, status=status.HTTP_200_OK)
