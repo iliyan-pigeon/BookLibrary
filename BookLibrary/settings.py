@@ -30,8 +30,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'BookLibraryAPI.BooksUser'
-
 
 # Application definition
 
@@ -136,3 +134,5 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = (
     BASE_DIR / 'BookLibrary/BookLibraryFrontend/static',
 )
+
+AUTH_USER_MODEL = 'BookLibraryAPI.BooksUser'
