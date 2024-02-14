@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from rest_framework import status
@@ -88,4 +89,20 @@ def register_user(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_user(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            return Response({'message': 'Login successful'}, status=200)
+        else:
+            return Response({'error': 'Account is disabled'}, status=401)
+    else:
+        return Response({'error': 'Invalid credentials'}, status=401)
 
