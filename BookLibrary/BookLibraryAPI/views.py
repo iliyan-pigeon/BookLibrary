@@ -1,8 +1,10 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from BookLibrary.BookLibraryAPI.serializers import BooksSerializer
+from rest_framework.decorators import api_view, permission_classes
+from BookLibrary.BookLibraryAPI.serializers import BooksSerializer, BooksUserSerializer
 from BookLibrary.BookLibraryAPI.models import Books
 
 
@@ -74,3 +76,16 @@ def search_books(request):
 
     serializer = BooksSerializer(queryset, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_user(request):
+    if request.method == 'POST':
+        serializer = BooksUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
