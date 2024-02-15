@@ -112,3 +112,10 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return Response({'detail': 'Successfully logged out'}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile_details(request):
+    serializer = BooksUserSerializer(request.user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
