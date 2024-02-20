@@ -126,21 +126,14 @@ def profile_details(request):
 def edit_user(request):
     user = request.user
 
-    current_password = request.data.get('current_password')
     new_username = request.data.get('new_username')
-    new_password = request.data.get('new_password')
     new_first_name = request.data.get('new_first_name')
     new_last_name = request.data.get('new_last_name')
     new_email = request.data.get('new_email')
     new_gender = request.data.get('new_gender')
 
-    if current_password and not user.check_password(current_password):
-        return Response({'error': 'Current password is incorrect'}, status=400)
-
     if new_username:
         user.username = new_username
-    if new_password:
-        user.set_password(new_password)
     if new_first_name:
         user.first_name = new_first_name
     if new_last_name:
@@ -153,3 +146,20 @@ def edit_user(request):
     user.save()
 
     return Response({'message': 'User information updated successfully'}, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def edit_password(request):
+    user = request.user
+
+    current_password = request.data.get('current_password')
+    new_password = request.data.get('new_password')
+
+    if current_password and not user.check_password(current_password):
+        return Response({'error': 'Current password is incorrect'}, status=400)
+
+    if new_password:
+        user.set_password(new_password)
+
+    return Response({'message': 'Password updated successfully'}, status=200)
