@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db import transaction
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -155,11 +156,28 @@ def edit_password(request):
 
     current_password = request.data.get('current_password')
     new_password = request.data.get('new_password')
+    new_password_confirm = request.data.get('new_password_confirm')
 
     if current_password and not user.check_password(current_password):
         return Response({'error': 'Current password is incorrect'}, status=400)
 
-    if new_password:
-        user.set_password(new_password)
+    if new_password == current_password:
+        return Response({'error': 'New password must be different from the current password'}, status=400)
 
-    return Response({'message': 'Password updated successfully'}, status=200)
+    if new_password and new_password_confirm:
+        if new_password == new_password_confirm:
+            serializer = BooksUserSerializer(instance=user, data={'password': new_password}, partial=True)
+
+            if serializer.is_valid():
+                with transaction.atomic():
+                    serializer.save()
+                    user.set_password(serializer.validated_data['password'])
+                    user.save()
+
+                return Response({'message': 'Password updated successfully'}, status=200)
+            else:
+                return Response({'error': 'Serializer validation failed', 'details': serializer.errors}, status=400)
+        else:
+            return Response({'error': 'New passwords do not match'}, status=400)
+    else:
+        return Response({'error': 'New password and confirmation are required'}, status=400)
