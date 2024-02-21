@@ -1,6 +1,6 @@
 from django.urls import path
 from BookLibrary.BookLibraryAPI.views import get_data, add_book, get_book, update_book, delete_book, search_books, \
-    register_user, login_user, logout_user, profile_details, edit_user
+    register_user, login_user, logout_user, profile_details, edit_user, edit_password
 
 urlpatterns = [
     path('', get_data, name='get data'),
@@ -13,5 +13,6 @@ urlpatterns = [
     path('login/', login_user, name='login user'),
     path('logout/', logout_user, name='logout user'),
     path('profile-details/', profile_details, name="profile details"),
-    path('edit-user', edit_user, name="edit user")
+    path('edit-user', edit_user, name="edit user"),
+    path('edit-password', edit_password, name='edit password')
 ]
