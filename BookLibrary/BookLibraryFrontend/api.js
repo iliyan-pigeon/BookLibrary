@@ -1,4 +1,4 @@
-const BASE_URL = 'https://your-django-api.com';
+const BASE_URL = 'http://127.0.0.1:8000/';
 
 async function fetchData(endpoint) {
     await fetch(`${BASE_URL}/${endpoint}`)
@@ -7,3 +7,4 @@ async function fetchData(endpoint) {
             console.log(data)
         }
         )}
+
